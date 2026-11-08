@@ -1,79 +1,79 @@
 ---
 title: Ret2Shell 文档中心
-description: Ret2Shell CTF 竞赛平台的详细文档与运维手册
+description: Ret2Shell CTF 竞赛平台的详细文档：管理面板操作、部署运维、配置参考与 API
+hero:
+  tagline: 功能丰富的 CTF 竞赛平台。动态容器题目、团队协作、实时竞赛 —— 这里有从管理面板上题到 k3s 集群部署的一站式文档。
+  image:
+    file: ../../assets/logo.svg
+    alt: Ret2Shell 徽标
+  actions:
+    - text: 上题指南（管理面板）
+      link: /ret2shell-docs/admin/challenges/
+    - text: 快速开始
+      link: /ret2shell-docs/getting-started/
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
-
-**Ret2Shell** 是一个功能丰富的 CTF 竞赛平台，基于 Kubernetes 动态编排题目容器实例，支持团队协作、实时通信与可编程的流量出口设计。本文档覆盖架构原理、生产部署、配置参考与运维排障。
-
-[快速开始](/getting-started/) · [运维速查手册](/ops/cheatsheet/) · [源码仓库](https://github.com/ret2shell/ret2shell)
 
 :::note[版本]
 本文档基于 **v3.10.11**（Rust MSRV 1.95.0+，SolidJS 1.9+）编写。
 :::
 
-## 核心特性
+## 平台管理
 
-- **动态容器挑战**：每道题目按需拉起独立 Pod 实例，TTL 自动回收、支持续期，动态 flag 按用户确定性生成。
-- **团队协作**：团队组建、邀请、权限分级与实时排行榜。
-- **可编程出口**：通过 Rune 脚本 `expose(node, service)` 自定义实例暴露方式（单出口直连、多出口、外部 FRP 控制器、wsrx 零暴露中转）。
-- **实时通信**：内置聊天、通知、公告与 WebSocket 推送。
-- **安全纵深**：JWT 认证、GCRA 速率限制、敏感词审计、实例级 NetworkPolicy 隔离、PoW 验证码。
-- **国际化**：中文 / 英文多语言支持。
-
-## 技术栈
-
-| 层级 | 技术 |
-| --- | --- |
-| 后端 | Rust (Axum · SeaORM) |
-| 数据库 | PostgreSQL 18+ |
-| 缓存 | Redis / Valkey 8+ |
-| 消息队列 | NATS 2+ (JetStream) |
-| 前端 | SolidJS · TypeScript · Vite · Tailwind CSS |
-| 部署 | Docker Compose · Kubernetes / Helm · k3s |
-
-## 平台与集群的关系
-
-平台主服务 `r2s-server` 通过 Kubernetes API 管理题目实例：玩家开启挑战时创建 Pod 与 Service，到期自动回收。生产环境推荐平台与集群同装（InCluster 模式），详见[平台与集群架构](/architecture/overview/)。
-
-```mermaid
-flowchart LR
-  P["玩家"] -->|"HTTPS :443"| GW["反向代理 / NodePort"]
-  GW --> PLAT["r2s-server<br/>API + 前端 + 控制器"]
-  PLAT -->|"Kubernetes API"| POOL["挑战实例 Pod 池"]
-  PLAT --> PG[("PostgreSQL")]
-  PLAT --> VK[("Valkey")]
-  PLAT --> NT[("NATS")]
-```
-
-## 文档导航
+面向比赛主办方与平台运维的 Web 面板操作文档，全程无需命令行。
 
 <CardGrid stagger>
-  <Card title="快速开始" icon="rocket">
-    本地开发环境搭建：Docker Compose 依赖 + 前后端热重载。
-  </Card>
-  <Card title="架构与原理" icon="puzzle">
-    平台组件、实例生命周期、网络出口设计。
-  </Card>
-  <Card title="部署指南" icon="box">
-    Docker Compose / Helm / k3s 生产部署与安全加固。
-  </Card>
-  <Card title="配置参考" icon="setting">
-    config.toml 全量字段、Helm values、运行时配置。
-  </Card>
-  <Card title="API 参考" icon="code">
-    REST API 与 WebSocket 流量隧道。
-  </Card>
-  <Card title="运维手册" icon="wrench">
-    速查手册与 19 个实战踩坑的排障方案。
-  </Card>
+	<Card title="管理面板总览" href="/ret2shell-docs/admin/overview/">
+		两级面板（平台 / 比赛）的入口、页面地图与权限模型。
+	</Card>
+	<Card title="创建与管理比赛" href="/ret2shell-docs/admin/games/">
+		建赛表单、时间线与自动放题、策略、队伍审核与监控。
+	</Card>
+	<Card title="上题指南（管理面板）" href="/ret2shell-docs/admin/challenges/">
+		创建题目、题解与附件、环境与实例、评测脚本、公开上线——纯面板上题全流程。
+	</Card>
+	<Card title="环境路由与生命周期" href="/ret2shell-docs/admin/runtime/">
+		traffic 出口脚本、生命周期预设、容器流量捕获与集群管理。
+	</Card>
+	<Card title="平台级管理" href="/ret2shell-docs/admin/platform/">
+		用户权限、OAuth、邮箱、验证码、媒体与服务器日志。
+	</Card>
 </CardGrid>
+
+## 部署与进阶
+
+<CardGrid stagger>
+	<Card title="快速开始" href="/ret2shell-docs/getting-started/">
+		开发环境与 Docker Compose 一键起站。
+	</Card>
+	<Card title="部署指南" href="/ret2shell-docs/deploy/overview/">
+		从 Compose 到 k3s 生产三节点集群的完整路径。
+	</Card>
+	<Card title="配置参考" href="/ret2shell-docs/config/reference/">
+		config.toml 全量字段、Helm values 与 ChallengeEnv。
+	</Card>
+	<Card title="API 参考" href="/ret2shell-docs/api/rest/">
+		REST 模块地图与 wsrx 流量隧道。
+	</Card>
+	<Card title="运维手册" href="/ret2shell-docs/ops/troubleshooting/">
+		19 个生产踩坑案例与一屏速查表。
+	</Card>
+</CardGrid>
+
+## 核心特性
+
+- **动态容器挑战**：每道题目按需拉起独立实例，TTL 自动回收、支持续期，动态 flag 按用户确定性生成。
+- **团队协作**：团队组建、邀请、权限分级与实时排行榜。
+- **可编程出口**：Rune 脚本 `expose(node, service)` 自定义实例暴露方式（单出口直连、多出口、外部 FRP、wsrx 零暴露中转）。
+- **实时通信**：内置聊天、通知、公告与 WebSocket 推送。
+- **安全纵深**：JWT 认证、GCRA 速率限制、敏感词审计、实例级网络隔离、PoW 验证码。
+- **国际化**：中文 / 英文等多语言支持。
 
 ## 社区与支持
 
-- QQ 群：[1104642385](https://qm.qq.com/q/u0BUcpU6l2)
+- QQ 群：[1104642385](https://qm.qq.com/q/u0BUcpU6l29)
 - Telegram：[t.me/ret2shell](https://t.me/ret2shell)
-- GitHub Discussions：[项目讨论区](https://github.com/ret2shell/ret2shell/discussions)
+- GitHub：[ret2shell/ret2shell](https://github.com/ret2shell/ret2shell)（[Discussions](https://github.com/ret2shell/ret2shell/discussions)）
 
-Ret2Shell 使用 GPL-3.0 衍生的自定义许可证，含用户面向的商业化限制，详见 [LICENSE](https://github.com/ret2shell/ret2shell/blob/main/LICENSE) 与 [COMMERCIAL_POLICY](https://github.com/ret2shell/ret2shell/blob/main/COMMERCIAL_POLICY.md)。
+使用 GPL-3.0 衍生的自定义许可证，含用户面向的商业化限制，详见 [LICENSE](https://github.com/ret2shell/ret2shell/blob/main/LICENSE) 与 [COMMERCIAL_POLICY](https://github.com/ret2shell/ret2shell/blob/main/COMMERCIAL_POLICY.md)。

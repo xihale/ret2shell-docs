@@ -39,6 +39,16 @@ export default defineConfig({
           ],
         },
         {
+          label: '平台管理',
+          items: [
+            { label: '管理面板总览', slug: 'admin/overview' },
+            { label: '创建与管理比赛', slug: 'admin/games' },
+            { label: '上题指南（管理面板）', slug: 'admin/challenges' },
+            { label: '环境路由与生命周期', slug: 'admin/runtime' },
+            { label: '平台级管理', slug: 'admin/platform' },
+          ],
+        },
+        {
           label: '架构与原理',
           items: [
             { label: '平台与集群架构', slug: 'architecture/overview' },
