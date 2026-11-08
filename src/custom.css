@@ -1,0 +1,18 @@
+/* Ret2Shell 品牌色定制（品牌蓝 #0078d6，源自官方 logo） */
+
+:root {
+  --sl-color-accent-low: #d2e7f7;
+  --sl-color-accent: #0078d6;
+  --sl-color-accent-high: #004f8e;
+}
+
+:root[data-theme='dark'] {
+  --sl-color-accent-low: #06233c;
+  --sl-color-accent: #2e9be6;
+  --sl-color-accent-high: #b9dbf3;
+}
+
+/* 首页 hero 标题字体微调 */
+.hero > .hero-content > h1 {
+  letter-spacing: -0.02em;
+}
